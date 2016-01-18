@@ -20,9 +20,9 @@ class Graph(object):
         for mot in listeMot :
             tab.append([])
         self.succ = tab #tableau de list de longueur listeMot
-        self.pere = [-1]*len(self.listeMot)
         self.listeMot = listeMot
         self.dejaVu = [False]*len(self.listeMot)
+        self.pere = [-1]*len(self.listeMot)
 
     def AjouterArete (self, s, d) :
         """ajoute s à la liste des successeurs de d et d à celle de s, 
