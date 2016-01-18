@@ -22,7 +22,9 @@ class Graph(object):
         self.succ = tab #tableau de list de longueur listeMot
         self.listeMot = listeMot
         self.dejaVu = [False]*len(self.listeMot)
-        self.pere = [-1]*len(self.listeMot)
+        self.pere = []
+        for mot in listeMot :
+            self.pere.append([])
         self.chemin = []
 
     def AjouterArete (self, s, d) :
@@ -71,13 +73,14 @@ class Graph(object):
         self.chemin.append(self.listeMot[x])
         for fils in self.succ[x] :
             if not self.dejaVu[fils] :
-                if self.pere[fils] != -1 :
-                    self.pere[fils] = x
+                if x not in self.pere[fils]:
+                    self.pere[fils].append(x)
+                if fils not in self.pere[x]:
+                    self.pere[x].append(fils)
                 self.DFS_chemin(fils)
 
     def visit_chemin(self) :
         self.dejaVu = [False]*len(self.listeMot)
-        self.pere = [-1]*len(self.listeMot)
         for x in range(len(self.dejaVu)) :
             if(not self.dejaVu[x]) :
                 self.chemin = []
@@ -85,8 +88,7 @@ class Graph(object):
                 #print(self.chemin)
 
     #marche pas
-    def print_chemin(self, mot1, mot2) :
-        self.visit_chemin()
+    def print_cheminold(self, mot1, mot2) :
         chemin = []
         imot1 = self.getIndice(mot1)
         imot2 = self.getIndice(mot2)
@@ -94,14 +96,38 @@ class Graph(object):
         while i != imot1:
             chemin.append(self.listeMot[i])
             i = self.pere[i]
-            print(chemin)
         print(i, imot1)
         if i != -1 and i == imot1 :
             chemin.append(self.listeMot[i])
-            print(chemin.reverse())
+            print(chemin)
         else :
             print("a pas chemin huhuhh")
-        
+
+    def print_chemin(self, mot1, mot2) :
+        imot1 = self.getIndice(mot1)
+        imot2 = self.getIndice(mot2)
+        self.dejaVu = [False]*(len(self.listeMot))
+        self.dejaVu[imot2] = True
+        chemin = [imot2]
+        if not self.r_print_chemin(imot1, imot2, chemin) :
+            print("pas de chemin")
+            
+    def r_print_chemin(self, imot1, imot2, chemin) :
+        print("call", self.listeMot[imot1], self.listeMot[imot2], chemin)
+        if imot2 == imot1 :
+            print(self.listeMot[chemin.pop()])
+            return True
+        for i in range(len(self.pere[imot2])):
+            if not self.dejaVu[i] :
+                self.dejaVu[i] = True
+                chemin.append(i)
+                if self.r_print_chemin(imot1, i, chemin) :
+                    print(self.listeMot[chemin.pop()])
+                    return True
+                else :
+                    chemin.pop()
+        return False
+                
                 
 petiteliste = ["gag", "gay", "guy", "bob"]
 listeMot =  ["gag", "gai", "gaz", "gel", "gks", 
@@ -112,8 +138,9 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 
 # print(listeMot)
 # graph = Graph(petiteliste)
-graph = Graph(Dicos.dico4)
+graph = Graph(listeMot)
 graph.lettreQuiSaute()
+graph.visit_chemin()
 # print(graph.succ)
 
 
@@ -123,7 +150,7 @@ graph.lettreQuiSaute()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.print_chemin("lion", "peur")
+graph.print_chemin("gag" , "art")
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
