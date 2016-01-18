@@ -23,6 +23,7 @@ class Graph(object):
         self.listeMot = listeMot
         self.dejaVu = [False]*len(self.listeMot)
         self.pere = [-1]*len(self.listeMot)
+        self.chemin = []
 
     def AjouterArete (self, s, d) :
         """ajoute s à la liste des successeurs de d et d à celle de s, 
@@ -40,29 +41,23 @@ class Graph(object):
                     self.AjouterArete(i,j)
 
     def DFS(self,x) :
-        parcours = [self.listeMot[x]]
         self.dejaVu[x] = True
-        indice = x
-        trouve = True
-        while trouve:
-            trouve = False
-            for imot in self.succ[indice] :
-                if(not self.dejaVu[imot]) :
-                    indice = imot
-                    self.dejaVu[imot] = True
-                    parcours.append(self.listeMot[indice])
-                    trouve = True
-                    break
-        print(parcours)
+        # print(self.listeMot[x])
+        self.chemin.append(self.listeMot[x])
+        for fils in self.succ[x] :
+            if not self.dejaVu[fils] :
+                self.DFS(fils)
 
     def visit(self) :
         self.dejaVu = [False]*len(self.listeMot)
         for x in range(len(self.dejaVu)) :
             if(not self.dejaVu[x]) :
+                self.chemin = []
                 self.DFS(x)
+                print(self.chemin)
 
     #TODO ######################################################################""
-    def DFS(self,x) :
+    def DFS2(self,x) :
         parcours = [self.listeMot[x]]
         self.dejaVu[x] = True
         indice = x
@@ -78,7 +73,7 @@ class Graph(object):
                     break
         print(parcours)
 
-    def visit(self) :
+    def visit2(self) :
         self.dejaVu = [False]*len(self.listeMot)
         for x in range(len(self.dejaVu)) :
             if(not self.dejaVu[x]) :
@@ -98,7 +93,9 @@ graph = Graph(listeMot)
 graph.lettreQuiSaute()
 # print(graph.succ)
 
-#graph.DFS(0)
+
+
+# graph.DFS(0)
 #graph.DFS(1)
 #graph.DFS(2)
 #graph.DFS(3)
