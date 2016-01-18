@@ -56,30 +56,53 @@ class Graph(object):
                 self.DFS(x)
                 print(self.chemin)
 
-    #TODO ######################################################################""
-    def DFS2(self,x) :
-        parcours = [self.listeMot[x]]
-        self.dejaVu[x] = True
-        indice = x
-        trouve = True
-        while trouve:
-            trouve = False
-            for imot in self.succ[indice] :
-                if(not self.dejaVu[imot]) :
-                    indice = imot
-                    self.dejaVu[imot] = True
-                    parcours.append(self.listeMot[indice])
-                    trouve = True
-                    break
-        print(parcours)
 
-    def visit2(self) :
+
+    def getIndice(self, mot) :
+        for i in range(len(self.listeMot)) :
+            if mot == self.listeMot[i] :
+                return i
+        print(mot, "pas trouvé")
+        return -1
+                
+    def DFS_chemin(self,x) :
+        self.dejaVu[x] = True
+        # print(self.listeMot[x])
+        self.chemin.append(self.listeMot[x])
+        for fils in self.succ[x] :
+            if not self.dejaVu[fils] :
+                if self.pere[fils] != -1 :
+                    self.pere[fils] = x
+                self.DFS_chemin(fils)
+
+    def visit_chemin(self) :
         self.dejaVu = [False]*len(self.listeMot)
+        self.pere = [-1]*len(self.listeMot)
         for x in range(len(self.dejaVu)) :
             if(not self.dejaVu[x]) :
-                self.DFS(x)
+                self.chemin = []
+                self.DFS_chemin(x)
+                #print(self.chemin)
 
-
+    #marche pas
+    def print_chemin(self, mot1, mot2) :
+        self.visit_chemin()
+        chemin = []
+        imot1 = self.getIndice(mot1)
+        imot2 = self.getIndice(mot2)
+        i = imot2
+        while i != imot1:
+            chemin.append(self.listeMot[i])
+            i = self.pere[i]
+            print(chemin)
+        print(i, imot1)
+        if i != -1 and i == imot1 :
+            chemin.append(self.listeMot[i])
+            print(chemin.reverse())
+        else :
+            print("a pas chemin huhuhh")
+        
+                
 petiteliste = ["gag", "gay", "guy", "bob"]
 listeMot =  ["gag", "gai", "gaz", "gel", "gks", 
              "gin", "gnu", "glu", "gui", "guy", "gre", "gue", 
@@ -89,7 +112,7 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 
 # print(listeMot)
 # graph = Graph(petiteliste)
-graph = Graph(listeMot)
+graph = Graph(Dicos.dico4)
 graph.lettreQuiSaute()
 # print(graph.succ)
 
@@ -100,7 +123,7 @@ graph.lettreQuiSaute()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.visit()
+graph.print_chemin("lion", "peur")
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
