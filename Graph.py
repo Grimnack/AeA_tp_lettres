@@ -87,22 +87,9 @@ class Graph(object):
                 self.DFS_chemin(x)
                 #print(self.chemin)
 
-    #marche pas
-    def print_cheminold(self, mot1, mot2) :
-        chemin = []
-        imot1 = self.getIndice(mot1)
-        imot2 = self.getIndice(mot2)
-        i = imot2
-        while i != imot1:
-            chemin.append(self.listeMot[i])
-            i = self.pere[i]
-        print(i, imot1)
-        if i != -1 and i == imot1 :
-            chemin.append(self.listeMot[i])
-            print(chemin)
-        else :
-            print("a pas chemin huhuhh")
-
+    #utilise pour trouver un chemin entre mot1 et mot2
+    #appele la fonction recursive r_print_chemin
+    #lettreQuiSaute() et visit_chemin() doivent etre appeles avant
     def print_chemin(self, mot1, mot2) :
         imot1 = self.getIndice(mot1)
         imot2 = self.getIndice(mot2)
@@ -111,21 +98,28 @@ class Graph(object):
         chemin = [imot2]
         if not self.r_print_chemin(imot1, imot2, chemin) :
             print("pas de chemin")
-            
+
+    #fonction recursive de print_chemin
     def r_print_chemin(self, imot1, imot2, chemin) :
-        print("call", self.listeMot[imot1], self.listeMot[imot2], chemin)
+        #cas terminal, les 2 mots sont les memes
         if imot2 == imot1 :
             print(self.listeMot[chemin.pop()])
             return True
-        for i in range(len(self.pere[imot2])):
+        
+        for i in self.pere[imot2]:
+
             if not self.dejaVu[i] :
+                #on marque le mot comme deja vu, on l'ajoute au chemin
                 self.dejaVu[i] = True
                 chemin.append(i)
+                #si l'appel recursif ne trouve pas le chemin, on marque le mot comme non vu et on l'enleve du chemin, pour recommencer sur une autre branche
                 if self.r_print_chemin(imot1, i, chemin) :
                     print(self.listeMot[chemin.pop()])
                     return True
                 else :
                     chemin.pop()
+                    self.dejaVu[i] = False
+
         return False
                 
                 
@@ -138,7 +132,7 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 
 # print(listeMot)
 # graph = Graph(petiteliste)
-graph = Graph(listeMot)
+graph = Graph(Dicos.dico4)
 graph.lettreQuiSaute()
 graph.visit_chemin()
 # print(graph.succ)
@@ -150,7 +144,7 @@ graph.visit_chemin()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.print_chemin("gag" , "art")
+graph.print_chemin("lion" , "peur")
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
