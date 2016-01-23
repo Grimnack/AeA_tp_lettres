@@ -1,6 +1,7 @@
 # TP lettre qui saute 
 # Arnaud Cojez et Matthieu Caron
 import Dicos
+from collections import deque
 
 def diffUneLettre(mot1, mot2):
     if len(mot1) != len(mot2) :
@@ -121,6 +122,26 @@ class Graph(object):
                     self.dejaVu[i] = False
 
         return False
+
+    def BFSIteratif(self, x) :
+        toVisit = deque([x])
+        parcours = []
+        self.dejaVu = [False]*len(self.listeMot)
+
+        #tant qu'il y a qqch dans la file
+        while toVisit :
+            #on depop 
+            x = toVisit.popleft()
+            #si on a pas deja parcouru le mot
+            if not self.dejaVu[x] :
+                #on l'ajoute a la liste des parcourus
+                parcours.append(self.listeMot[x])
+                #on ajoute ses succ a la file des sommets a parcourir
+                toVisit.extend(self.succ[x])
+                self.dejaVu[x] = True
+                
+        print(parcours)
+            
                 
                 
 petiteliste = ["gag", "gay", "guy", "bob"]
@@ -132,7 +153,7 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 
 # print(listeMot)
 # graph = Graph(petiteliste)
-graph = Graph(Dicos.dico4)
+graph = Graph(listeMot)
 graph.lettreQuiSaute()
 graph.visit_chemin()
 # print(graph.succ)
@@ -144,7 +165,7 @@ graph.visit_chemin()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.print_chemin("lion" , "peur")
+graph.BFSIteratif(0)
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
