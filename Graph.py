@@ -126,6 +126,23 @@ class Graph(object):
         parcours.append(self.listeMot[actuel])
         print(parcours)
     
+# Question 5
+    def lienPossible(self,u,v) :
+        tailleU = len(u)
+        tailleV = len(v)
+        cpt = self.sup + self.dif
+        if tailleU < tailleV :
+            return(False)
+        elif tailleU - tailleV < self.sup :
+            return(False)
+        else :
+            for i in range(tailleV) :
+                if u[i] != v[i] :
+                    cpt -= 1
+                if cpt < 0 :
+                    return False
+        return True
+
 
                 
                 
