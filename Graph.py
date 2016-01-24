@@ -23,9 +23,7 @@ class Graph(object):
         self.succ = tab #tableau de list de longueur listeMot
         self.listeMot = listeMot
         self.dejaVu = [False]*len(self.listeMot)
-        self.pere = []
-        for mot in listeMot :
-            self.pere.append([])
+        self.pere = [-1] * len(self.listeMot)
         self.chemin = []
 
     def AjouterArete (self, s, d) :
@@ -68,60 +66,32 @@ class Graph(object):
         print(mot, "pas trouvé")
         return -1
                 
-    def DFS_chemin(self,x) :
+    def DFS_profondeur(self,x) :
         self.dejaVu[x] = True
         # print(self.listeMot[x])
         self.chemin.append(self.listeMot[x])
         for fils in self.succ[x] :
             if not self.dejaVu[fils] :
-                if x not in self.pere[fils]:
-                    self.pere[fils].append(x)
-                if fils not in self.pere[x]:
-                    self.pere[x].append(fils)
-                self.DFS_chemin(fils)
+                self.pere[fils] = x
+                self.DFS_profondeur(fils)
 
-    def visit_chemin(self) :
+    def visit_profondeur(self) :
         self.dejaVu = [False]*len(self.listeMot)
         for x in range(len(self.dejaVu)) :
             if(not self.dejaVu[x]) :
                 self.chemin = []
-                self.DFS_chemin(x)
-                #print(self.chemin)
+                self.DFS_profondeur(x)
+                print(self.chemin)
 
-    #utilise pour trouver un chemin entre mot1 et mot2
-    #appele la fonction recursive r_print_chemin
-    #lettreQuiSaute() et visit_chemin() doivent etre appeles avant
-    def print_chemin(self, mot1, mot2) :
-        imot1 = self.getIndice(mot1)
-        imot2 = self.getIndice(mot2)
-        self.dejaVu = [False]*(len(self.listeMot))
-        self.dejaVu[imot2] = True
-        chemin = [imot2]
-        if not self.r_print_chemin(imot1, imot2, chemin) :
-            print("pas de chemin")
-
-    #fonction recursive de print_chemin
-    def r_print_chemin(self, imot1, imot2, chemin) :
-        #cas terminal, les 2 mots sont les memes
-        if imot2 == imot1 :
-            print(self.listeMot[chemin.pop()])
-            return True
-        
-        for i in self.pere[imot2]:
-
-            if not self.dejaVu[i] :
-                #on marque le mot comme deja vu, on l'ajoute au chemin
-                self.dejaVu[i] = True
-                chemin.append(i)
-                #si l'appel recursif ne trouve pas le chemin, on marque le mot comme non vu et on l'enleve du chemin, pour recommencer sur une autre branche
-                if self.r_print_chemin(imot1, i, chemin) :
-                    print(self.listeMot[chemin.pop()])
-                    return True
-                else :
-                    chemin.pop()
-                    self.dejaVu[i] = False
-
-        return False
+    def chemin_profondeur(self, mot1, mot2):
+        parcours = []
+        self.DFS_profondeur(self.getIndice(mot1))
+        actuel = self.getIndice(mot2)
+        while self.pere[actuel] != -1 :
+            parcours.append(self.listeMot[actuel])
+            actuel = self.pere[actuel]
+        parcours.append(self.listeMot[actuel])
+        print(parcours)
 
     def BFSIteratif(self, racine) :
         toVisit = deque([racine])
@@ -144,7 +114,7 @@ class Graph(object):
                         toVisit.append(successeur)
                 self.dejaVu[x] = True
                 
-        print(parcours)
+        # print(parcours)
         return pere
 
     def afficheChemin(self, feuille, pere):
@@ -156,7 +126,7 @@ class Graph(object):
         parcours.append(self.listeMot[actuel])
         print(parcours)
     
-    
+
                 
                 
 petiteliste = ["gag", "gay", "guy", "bob"]
@@ -170,9 +140,10 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 # graph = Graph(petiteliste)
 graph = Graph(Dicos.dico4)
 graph.lettreQuiSaute()
-graph.visit_chemin()
+# graph.visit_profondeur()
 # print(graph.succ)
 
+graph.chemin_profondeur("lion","peur")
 
 
 # graph.DFS(0)
@@ -180,9 +151,9 @@ graph.visit_chemin()
 #graph.DFS(2)
 #graph.DFS(3)
 
-pere = graph.BFSIteratif(graph.getIndice("lion"))
+# pere = graph.BFSIteratif(graph.getIndice("lion"))
 # print(pere)
-graph.afficheChemin(graph.getIndice("peur"),pere)
+# graph.afficheChemin(graph.getIndice("peur"),pere)
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
