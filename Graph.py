@@ -127,6 +127,7 @@ class Graph(object):
         toVisit = deque([racine])
         parcours = []
         self.dejaVu = [False]*len(self.listeMot)
+        pere = [-1] * len(self.listeMot)
 
         #tant qu'il y a qqch dans la file
         while toVisit :
@@ -138,12 +139,24 @@ class Graph(object):
                 parcours.append(self.listeMot[x])
                 #on ajoute ses succ a la file des sommets a parcourir
                 for successeur in self.succ[x] :
-                    self.pere[successeur].append(x) #j'ajoute le père pour créer l'arbre
-                    toVisit.append(successeur)
+                    if not self.dejaVu[successeur] :
+                        pere[successeur] = x #j'ajoute le père pour créer l'arbre
+                        toVisit.append(successeur)
                 self.dejaVu[x] = True
                 
         print(parcours)
-            
+        return pere
+
+    def afficheChemin(self, feuille, pere):
+        parcours = []
+        actuel = feuille
+        while pere[actuel] != -1 :
+            parcours.append(self.listeMot[actuel])
+            actuel = pere[actuel]
+        parcours.append(self.listeMot[actuel])
+        print(parcours)
+    
+    
                 
                 
 petiteliste = ["gag", "gay", "guy", "bob"]
@@ -167,7 +180,9 @@ graph.visit_chemin()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.BFSIteratif(graph.getIndice("lion"))
+pere = graph.BFSIteratif(graph.getIndice("lion"))
+# print(pere)
+graph.afficheChemin(graph.getIndice("peur"),pere)
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
