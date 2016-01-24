@@ -123,8 +123,8 @@ class Graph(object):
 
         return False
 
-    def BFSIteratif(self, x) :
-        toVisit = deque([x])
+    def BFSIteratif(self, racine) :
+        toVisit = deque([racine])
         parcours = []
         self.dejaVu = [False]*len(self.listeMot)
 
@@ -137,7 +137,9 @@ class Graph(object):
                 #on l'ajoute a la liste des parcourus
                 parcours.append(self.listeMot[x])
                 #on ajoute ses succ a la file des sommets a parcourir
-                toVisit.extend(self.succ[x])
+                for successeur in self.succ[x] :
+                    self.pere[successeur].append(x) #j'ajoute le père pour créer l'arbre
+                    toVisit.append(successeur)
                 self.dejaVu[x] = True
                 
         print(parcours)
@@ -153,7 +155,7 @@ listeMot =  ["gag", "gai", "gaz", "gel", "gks",
 
 # print(listeMot)
 # graph = Graph(petiteliste)
-graph = Graph(listeMot)
+graph = Graph(Dicos.dico4)
 graph.lettreQuiSaute()
 graph.visit_chemin()
 # print(graph.succ)
@@ -165,7 +167,7 @@ graph.visit_chemin()
 #graph.DFS(2)
 #graph.DFS(3)
 
-graph.BFSIteratif(0)
+graph.BFSIteratif(graph.getIndice("lion"))
 
 # graph3 = Graph(Dicos.dico3)
 # graph3.lettreQuiSaute()
