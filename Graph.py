@@ -160,7 +160,7 @@ graph.lettreQuiSaute()
 # graph.visit_profondeur()
 # print(graph.succ)
 
-graph.chemin_profondeur("lion","peur")
+# graph.chemin_profondeur("lion","peur")
 
 
 # graph.DFS(0)
